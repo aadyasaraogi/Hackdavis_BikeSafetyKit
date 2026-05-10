@@ -61,6 +61,3 @@ final class MotionDetector {
         return false
     }
 }
-
-
-//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
