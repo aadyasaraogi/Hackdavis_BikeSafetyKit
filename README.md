@@ -1,14 +1,14 @@
-Got Your Back 🚴‍♂️⚠️
+#Got Your Back 🚴‍♂️⚠️  
 Got Your Back is an AI-powered bike safety system designed to improve cyclist awareness and communication on the road. The project combines computer vision, BLE communication, and embedded systems to create a low-cost smart biking assistant for everyday riders.
 
-Overview
+Overview  
 Cyclists often have limited awareness of fast-approaching vehicles behind them and rely on hand signals that may not always be visible or safe. Got Your Back addresses these problems with:
 AI-based rear hazard detection
 Real-time rider alerts
 Smart left/right turn signaling
 The system is designed for environments with heavy bike traffic such as college campuses and urban roads.
 
-Features: 
+Features:   
 
 🚗 AI Vehicle Detection
 A computer vision model using OpenAI API call running on a smartphone continuously analyzes the surroundings behind the cyclist using the phone camera. The model detects approaching vehicles and classifies situations as:
