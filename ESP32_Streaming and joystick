@@ -1,0 +1,132 @@
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
+
+// BLE setup
+#define SERVICE_UUID "12345678-1234-1234-1234-123456789abc"
+#define RX_CHAR_UUID "abcd1234-5678-90ab-cdef-123456789abc"
+
+// Pin setup
+#define BUZZER_PIN 20
+
+const int xPin = 2;
+const int yPin = 3;
+
+const int blueLED = 4;
+const int redLED = 15;
+
+// Buzzer timer setup
+bool buzzerActive = false;
+unsigned long buzzerStartTime = 0;
+const unsigned long buzzerDuration = 5000;
+
+// BLE advertising
+BLEAdvertising *advertising;
+
+class ServerCallback : public BLEServerCallbacks {
+  void onConnect(BLEServer *server) {
+    Serial.println("Phone connected");
+  }
+
+  void onDisconnect(BLEServer *server) {
+    Serial.println("Phone disconnected");
+    delay(500);
+    BLEDevice::startAdvertising();
+    Serial.println("Advertising restarted");
+  }
+};
+
+class RxCallback : public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *pCharacteristic) {
+    String message = pCharacteristic->getValue();
+    message.trim();
+    message.toUpperCase();
+
+    Serial.print("Received over BLE GATT: ");
+    Serial.println(message);
+
+    if (message == "D") {
+      Serial.println("D received: buzzer ON for 5 seconds");
+
+      digitalWrite(BUZZER_PIN, HIGH);
+      buzzerActive = true;
+      buzzerStartTime = millis();
+    }
+
+    else if (message == "S") {
+      Serial.println("S received: safe/no change");
+    }
+  }
+};
+
+void setup() {
+  Serial.begin(115200);
+  delay(2000);
+
+  // Buzzer
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(BUZZER_PIN, LOW);
+
+  // LEDs
+  pinMode(blueLED, OUTPUT);
+  pinMode(redLED, OUTPUT);
+
+  // BLE
+  Serial.println("Starting BLE GATT server...");
+
+  BLEDevice::init("BIAS_ESP32_NEW");
+
+  BLEServer *server = BLEDevice::createServer();
+  server->setCallbacks(new ServerCallback());
+
+  BLEService *service = server->createService(SERVICE_UUID);
+
+  BLECharacteristic *rxCharacteristic = service->createCharacteristic(
+    RX_CHAR_UUID,
+    BLECharacteristic::PROPERTY_WRITE |
+    BLECharacteristic::PROPERTY_WRITE_NR
+  );
+
+  rxCharacteristic->setCallbacks(new RxCallback());
+
+  service->start();
+
+  advertising = BLEDevice::getAdvertising();
+  advertising->addServiceUUID(SERVICE_UUID);
+  advertising->setScanResponse(true);
+  advertising->start();
+
+  Serial.println("Ready. Connect to BIAS_ESP32_NEW.");
+}
+
+void loop() {
+
+  // Turn buzzer off after 5 seconds
+  if (buzzerActive && millis() - buzzerStartTime >= buzzerDuration) {
+    digitalWrite(BUZZER_PIN, LOW);
+    buzzerActive = false;
+    Serial.println("Buzzer OFF");
+  }
+
+  // Joystick + LEDs
+  int xValue = analogRead(xPin);
+  int yValue = analogRead(yPin);
+
+  digitalWrite(blueLED, LOW);
+  digitalWrite(redLED, LOW);
+
+  if (xValue > 2500) {
+    digitalWrite(redLED, HIGH);
+  }
+
+  if (yValue > 2500) {
+    digitalWrite(blueLED, HIGH);
+  }
+
+  Serial.print("X: ");
+  Serial.print(xValue);
+  Serial.print(" | Y: ");
+  Serial.println(yValue);
+
+  delay(50);
+}
