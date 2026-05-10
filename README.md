@@ -30,18 +30,19 @@ Right turn
 using LED indicators mounted on the bike.
 
 ## Hardware Used
-ESP32-C6
-Smartphone running computer vision model
-Active buzzer
-Joystick module
-LEDs
-Battery pack
+ESP32-C6  
+Smartphone running computer vision model  
+Active buzzer  
+Joystick module  
+LEDs  
+Battery pack  
 
-Technologies
-Arduino IDE
-BLE GATT Communication
-ESP32 Embedded Systems
-Computer Vision / AI Detection
-Swift + CoreBluetooth
-Embedded C++
+## Technologies
+Arduino IDE  
+BLE GATT Communication  
+ESP32 Embedded Systems  
+Computer Vision   
+OpenAI API
+Swift + CoreBluetooth  
+Embedded C++  
 
