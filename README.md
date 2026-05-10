@@ -11,7 +11,7 @@ The system is designed for environments with heavy bike traffic such as college 
 Features: 
 
 🚗 AI Vehicle Detection
-A computer vision model running on a smartphone continuously analyzes the surroundings behind the cyclist using the phone camera. The model detects approaching vehicles and classifies situations as:
+A computer vision model using OpenAI API call running on a smartphone continuously analyzes the surroundings behind the cyclist using the phone camera. The model detects approaching vehicles and classifies situations as:
 Safe
 Vehicle Detected
 Danger / Fast Approaching Vehicle
